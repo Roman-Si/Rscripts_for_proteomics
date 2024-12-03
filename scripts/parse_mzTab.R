@@ -75,8 +75,9 @@ count_peptide_modifications <- function(mzt, contaminant_prefix = 'CONTAMINANT_'
 
   psms <- data.frame(psms(MzTab(mzt))) %>% 
     filter(!grepl(contaminant_prefix, accession))
-
-  psms$modifications <- gsub("[0-9]+-UNIMOD", "UNIMOD", psms$modifications)
+  
+  # removes the PTM location
+  psms$modifications <- gsub("[0-9]+-UNIMOD", "UNIMOD", psms$modifications) 
   # Replace Unimod accessions with names
   psms$modifications <- sapply(psms$modifications, function(mod_string) {
     for (pattern in names(replacement_mapping)) {

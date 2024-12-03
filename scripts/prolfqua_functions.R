@@ -10,9 +10,10 @@ source("scripts/generic_functions.R")
 #' @param response_level Default is "peptide" and assumes msstats_in column names, set to "protein" to use protein level intensities
 #' @param proteinId_column Default is "ProteinName"
 #' @param factor_column Default is "Condition"
+#' @param extra_factor Extra factor for protein level data, batches for example. Default is NULL
 #' @return The LFQData object
 
-create_lfqdata <- function(data, contaminant_prefix = 'CONTAMINANT_', response_level = "peptide", proteinId_column = "ProteinName",factor_column = "Condition") {
+create_lfqdata <- function(data, contaminant_prefix = 'CONTAMINANT_', response_level = "peptide", proteinId_column = "ProteinName",factor_column = "Condition", extra_factor = NULL) {
 
     if (response_level == "peptide") {
         data <- data |> dplyr::group_by(Reference, Run, Condition, BioReplicate, PeptideSequence, ProteinName) |> 
@@ -29,6 +30,9 @@ create_lfqdata <- function(data, contaminant_prefix = 'CONTAMINANT_', response_l
     atable$set_response("Intensity")
     atable$factors[["condition_"]] = factor_column
     atable$factors[["run"]] = "Run"
+    if(!is.null(extra_factor)) {
+        atable$factors[["extrafactor_"]] = extra_factor
+}
     atable$factorDepth <- 1
     config <- prolfqua::AnalysisConfiguration$new(atable)
     
@@ -99,13 +103,13 @@ filter_for_leading_protein <- function(mp_df, proteomicslfq_ids_to_keep, protein
         tidyr::separate_rows(protein_Id, sep = protein_separator) %>%
         dplyr::pull(protein_Id)
         
-    if (length(proteins_in_groups) > 0) {
+    if (length(proteins_in_groups) > 0) { # check there are proteinGroups
         mp_df_multiple_ids <- mp_df %>%
         dplyr::filter(grepl(protein_separator, protein_Id))
-    
+        # no mapply iterates over each element of mp_df_multiple_ids$protein_Id and applies to it get_valid_ids with proteomicslfq_ids_to_keep as fixed argument
         mp_df_multiple_ids$protein_Id <- mapply(get_valid_ids, mp_df_multiple_ids$protein_Id, MoreArgs = list(proteomicslfq_ids_to_keep))
     
-        # Merge the filtered rows with single IDs and those with multiple IDs that were processed
+        # Merge the filtered rows with single IDs and those with previously multiple IDs that were processed
         mp_df <- dplyr::bind_rows(
             mp_df %>% dplyr::filter(!grepl(';', protein_Id)), 
             mp_df_multiple_ids)
@@ -124,7 +128,7 @@ filter_proteins_by_replicates <- function(mp_df, conditions, min_replicates) {
     quantified_proteins <- c()
   
     for (condition in conditions) {
-        condition_cols <- grep(condition, colnames(mp_df_quant), value = TRUE)
+        condition_cols <- grep(condition, colnames(mp_df), value = TRUE)
         max_nan <- length(condition_cols) - min_replicates
         mp_df[[paste0("count_na_", condition)]] <- rowSums(is.na(mp_df[, condition_cols]))
 
