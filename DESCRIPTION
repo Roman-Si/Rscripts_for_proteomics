@@ -1,0 +1,14 @@
+Package: Rsripts_for_proteomics
+Title: R scripts for downstream analysis of proteomics data
+Version: 0.0.1
+Authors@R: 
+    person(given = "Romanos",
+           family = "Siaperas",
+           role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0003-4104-1338"))
+Description: R scripts for visualization and quantitative analysis of proteomics data. Started with quantms output files but will expand.
+License: MIT + file LICENSE
+URL: https://github.com/Roman-Si/Rsripts_for_proteomics
+BugReports: https://github.com/Roman-Si/Rsripts_for_proteomics/issues
+Encoding: UTF-8
+LazyData: true
