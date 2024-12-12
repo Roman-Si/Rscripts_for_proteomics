@@ -1,15 +1,24 @@
-# Required Libraries
-library(tidyverse)
-library(ggplot2)
-library(MSnbase)
-source("scripts/generic_functions.R")
+#' @import ggplot2
+#' @importFrom dplyr filter mutate select group_by summarize distinct
+#' @importFrom tidyr unnest
+#' @importFrom MSnbase MzTab proteins psms
+#' @importFrom stringr strsplit str_detect
+NULL
 
-# Function to extract protein coverage, peptide and PSM count from mzTab
+
+#' Extract protein statistics from mzTab
+#'
+#' Extracts protein coverage, peptidoform count, and PSM count from an mzTab file.
+#'
 #' @param mzt Path to mzTab file
-#' @param contaminant_prefix The prefix for contaminants, default is CONTAMINANT_
-#' @param output_file Name of the output file (optional)
-#' @return Data frame with filtered protein information
-
+#' @param contaminant_prefix Prefix for contaminants, default is CONTAMINANT_
+#' @param output_file Optional. Name of the output file
+#' @return Data frame with the following columns:
+#'   - `accession`: Protein accession.
+#'   - `protein_coverage`: Coverage percentage of the protein sequence.
+#'   - `opt_global_nr_found_peptides`: Number of peptidoforms for this protein. A peptide can be counted with multiple PTMs.
+#'   - `PSMs`: Number of PSMs.
+#' @export
 extract_protein_stats <- function(mzt, contaminant_prefix = 'CONTAMINANT_', output_file = NULL) {
   prot_info <- data.frame(proteins(MzTab(mzt))) %>% 
     filter(!grepl(contaminant_prefix, accession), opt_global_result_type == "protein_details") %>% 
@@ -35,11 +44,14 @@ extract_protein_stats <- function(mzt, contaminant_prefix = 'CONTAMINANT_', outp
 }
 
 
-# Function that returns a vector with leading proteinId per proteinGroup based on proteomicsLFQ mzTab
+#' Extract leading protein IDs from mzTab
+#'
+#' Extracts a vector of protein IDs from the mzTab file. This file has one id per protein group.
+#'
 #' @param mzt Path to mzTab file
 #' @param contaminant_prefix The prefix for contaminants, default is CONTAMINANT_
 #' @return Vector with one protein per proteinGroug
-
+#' @export
 get_proteinIds_from_proteomicslfq <- function(mzt, contaminant_prefix = 'CONTAMINANT_') {
   proteomicslfq <- data.frame(proteins(MzTab(mzt))) 
   proteomicslfq <- proteomicslfq %>% filter(!grepl(contaminant_prefix, accession), opt_global_result_type != "protein_details")
@@ -48,16 +60,20 @@ get_proteinIds_from_proteomicslfq <- function(mzt, contaminant_prefix = 'CONTAMI
 }
 
 
-
-# Function to plot PTM counts (counting each modification once per spectrum)
+#' Count peptide modifications and generate plots
+#'
+#' Counts peptide modifications in an mzTab file and generates plots of their frequencies.
+#'
 #' @param mzt Path to mzTab file
 #' @param contaminant_prefix The prefix for contaminants, default is CONTAMINANT_
-#' @param plot_type Specifies the type of plot to generate: "separate" for plotting the frequency of each modification individually (recommended for more than 3 PTMs), or "mixed" for plotting the frequency of all possible combinations of modifications.
-#' @param output_jpg Name of the output jpg image (optional)
-#' @param jpg_width Image width, default 10
-#' @param jpg_height Image heigth, default 8
-#' @return The plot with PTM frequencies
-
+#' @param plot_type The type of plot to generate:
+#'   - `"separate"`: Plots the frequency of each modification individually.
+#'   - `"mixed"`: Plots the frequency of all combinations of modifications.
+#' @param output_jpg Optional. Name of the output jpg image to save.
+#' @param jpg_width Image width (default 10)
+#' @param jpg_height Image heigth (default 8)
+#' @return The ggplot with PTM frequencies
+#' @export
 count_peptide_modifications <- function(mzt, contaminant_prefix = 'CONTAMINANT_', plot_type = "mixed",  output_jpg = NULL, jpg_width = 10, jpg_height = 8) {
 
   if (!plot_type %in% c("mixed", "separate")) {

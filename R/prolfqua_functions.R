@@ -1,19 +1,30 @@
-library(tidyverse)
-library(ggplot2)
-library(prolfqua)
-source("scripts/generic_functions.R")
+#' @import ggplot2
+#' @import dplyr
+#' @importFrom tidyr separate_rows
+#' @import prolfqua
+NULL
 
-# Function to turn the msstats input dataframe or a cutom dataframe to lfqdata object for prolfqua 
-# Sample names in Reference column, response in Intensity column
+
+#' Create an LFQData object for prolfqua from msstats_in
+#'
+#' Converts a data frame of msstats input format or a custom data frame to LFQData object for the prolfqua package. Sample names in must be in Reference column, response in Intensity column
+#'
 #' @param data Dataframe with peptide at msstats_in format or protein data
-#' @param contaminant_prefix The prefix for contaminants, default is CONTAMINANT_
-#' @param response_level Default is "peptide" and assumes msstats_in column names, set to "protein" to use protein level intensities
-#' @param proteinId_column Default is "ProteinName"
-#' @param factor_column Default is "Condition"
-#' @param extra_factor Extra factor for protein level data, batches for example. Default is NULL
+#' @param contaminant_prefix Prefix for contaminants, default is CONTAMINANT_
+#' @param response_level Specifies the level to use:
+#'   - `"peptide"` (default): Aggregates peptide-level intensities.
+#'   - `"protein"`: Uses protein-level intensities.
+#' @param proteinId_column Name of column with protein IDs (deafult is "ProteinName")
+#' @param factor_column Name of column with the experimental/biological factor (default is "Condition")
+#' @param extra_factor Optional. Name of additional factor for protein level data, batches for example.
 #' @return The LFQData object
-
+#' @export
 create_lfqdata <- function(data, contaminant_prefix = 'CONTAMINANT_', response_level = "peptide", proteinId_column = "ProteinName",factor_column = "Condition", extra_factor = NULL) {
+
+    # check the response level is correct
+    if (!response_level %in% c("peptide", "protein")) {
+        stop("Invalid response_level. Choose either 'peptide' or 'protein'.")
+        }
 
     if (response_level == "peptide") {
         data <- data |> dplyr::group_by(Reference, Run, Condition, BioReplicate, PeptideSequence, ProteinName) |> 
@@ -46,18 +57,19 @@ create_lfqdata <- function(data, contaminant_prefix = 'CONTAMINANT_', response_l
 }
 
 
-
-# Function for protein aggregation of peptide normalized data
-# - Use Tukey's median polish protein aggregation
-# - Remove artifacts with same value in all samples 
-# - Replace the artifact intensities with top3 method
-# - Merge the two methods
+#' Aggregate peptide intensities to protein level
+#'
+#' Function for protein aggregation of peptide normalized data
+#' - Use Tukey's median polish protein aggregation
+#' - Remove artifacts with same value in all samples 
+#' - Replace the artifact intensities with top3 method
+#' - Merge the two methods
+#'
 #' @param lfqdataPeptideNorm The prolfqua object after peptide normalization
 #' @return The a dataframe with protein intensities
-
+#' @export
 protein_aggregation <- function(lfqdataPeptideNorm) {
     
-
     # Helper function to check if all values in a row are the same
     all_same <- function(x) {
         unique_values <- unique(na.omit(x))
@@ -92,11 +104,15 @@ protein_aggregation <- function(lfqdataPeptideNorm) {
 }
 
 
-# Function to keep leading protein of proteinGroups
-#' @param mp_df The dataframe with the proteinGroups in protein_Id column
-#' @param proteomicslfq_ids_to_keep The vector of the proteomicsLFQ leading proteins
-#' @param protein_separator The separator used for multiple protein IDs, default ";"
-#' @return The dataframe with only leading protein in protein_Id column
+#' Filter protein groups to retain leading protein IDs
+#'
+#' For protein groups with multiple IDs, filters the data frame to retain only the leading protein ID based on a given list.
+#'
+#' @param mp_df A dataframe with proteinGroups in `protein_Id` column
+#' @param proteomicslfq_ids_to_keep A vector containing the proteomicsLFQ leading proteins
+#' @param delimiter Delimiter for multiple proteins in a protein group (default is ;)
+#' @return A dataframe with only leading protein in `protein_Id` column
+#' @export
 filter_for_leading_protein <- function(mp_df, proteomicslfq_ids_to_keep, protein_separator = ";") {
     proteins_in_groups <- mp_df %>%
         dplyr::filter(grepl(protein_separator, protein_Id)) %>%
@@ -119,11 +135,15 @@ filter_for_leading_protein <- function(mp_df, proteomicslfq_ids_to_keep, protein
 }
 
 
-# Function to filter dataframe for proteins quantified in at least n replicates of one condition
+#' Filter proteins by replicate counts per condition
+#'
+#' Retains proteins that are quantified in at least a specified number of replicates for one condition.
+#'
 #' @param mp_df The dataframe with protein quantifications
 #' @param conditions The vector of the conditions to search the mp_df colnames
-#' @param min_replicates The number of min replicates needed
+#' @param min_replicates Minimum number of min replicates needed
 #' @return The dataframe with proteins passing the filtering
+#' @export
 filter_proteins_by_replicates <- function(mp_df, conditions, min_replicates) {
     quantified_proteins <- c()
   

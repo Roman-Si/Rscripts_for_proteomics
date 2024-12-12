@@ -1,8 +1,12 @@
-# Function to save gzipped dataframe in csv excluding the rownames
+#' Save gzipped csv file
+#'
+#' Saves a dataframe to a gzipped csv file, optionally including row names. . If the specified directory does not exist, it will be created.
+#'
 #' @param df The dataframe
 #' @param output_file The name of the output fle, if given in a directory that does not exist it will be created
 #' @param row_names Logical; whether to include row names in the output (default is FALSE)
 #' @return None
+#' @export
 save_gzipped_csv <- function(df, output_file, row_names = FALSE) {
   output_dir <- dirname(output_file)
   
@@ -16,18 +20,17 @@ save_gzipped_csv <- function(df, output_file, row_names = FALSE) {
 
 
 
-### Function to keep the main proteinId (as determined from proteomicsLFQ mzTab) in case of proteinGroups
-get_valid_ids <- function(all_ids, valid_ids, separator = ";") {
-#' @param all_ids The vector with one or multiple IDs per item
-#' @param valid_ids The vector with the leading IDs to keep
-#' @param separator The separator in case of multiple IDs per row (default is ;)
+#' Get Valid Protein IDs
+#'
+#' Filter vector of IDs, retaining only main IDs  (as determined from proteomicsLFQ mzTab) in case of proteinGroups
+#'
+#' @param all_ids A vector with one or multiple IDs per item
+#' @param valid_ids A vector with the IDs to keep
+#' @param delimiter The delimiter in case of multiple IDs per row (default is ;)
 #' @return The filtered vector with one leading ID per group
-
-  # Takes as input 
-  # - the vector ids where multiple proteinIds are separated with ;
-  # - the vector valid_ids that contains the main proteinId for each group
-  
-  ids_split <- strsplit(all_ids, ";")[[1]]
+#' @export
+get_valid_ids <- function(all_ids, valid_ids, delimiter = ";") {
+  ids_split <- strsplit(all_ids, delimiter)[[1]]
   valid_ids <- ids_split[ids_split %in% valid_ids]
   paste(valid_ids, collapse = ";")
 }

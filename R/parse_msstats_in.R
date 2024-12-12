@@ -1,76 +1,81 @@
-# Required Libraries
-library(dplyr)
-library(stringr)
-library(Biostrings)
-source("scripts/generic_functions.R")
+#' @import dplyr
+#' @importFrom stringr str_replace_all
+#' @importFrom Biostrings readAAStringSet
+NULL
 
-# Function to extract sequence, number and indexes of quantified peptides for each protein 
-# Maybe too long and needs splitting
+#' Extract peptide sequences, count and indices per protein
+#'
+#' Processes the msstats_in (formatted as input for msstats) file to extract peptide sequences, number and indexes of quantified peptides for each protein. Maybe too long and needs splitting
+#'
 #' @param msstats_input_path Path to msstats input style file from quantms (probably works for other programs as well?)
-#' @param fasta_path Path to fasta file with protein sequences, can be gzipped
-#' @param contaminant_prefix The prefix for contaminants, default is CONTAMINANT_
-#' @param delimiter The delimiter in case of peptides shared between different proteins, default is ;
-#' @param output_file Name of the output file (optional). better to merge it with the output of parse_mzTab::extract_protein_stats first and save together
-#' @return Data frame with peptide info (without PTMs) for each detected protein with following columns
-# - peptide sequences
-# - count of unmodified peptides
-# - min and max index of identified peptides in protein sequence, useful to check which part of the protein is detected
-
-# Define the function
+#' @param fasta_path Path to fasta file with protein sequences (can be gzipped)
+#' @param contaminant_prefix Prefix for contaminants (default is CONTAMINANT)
+#' @param delimiter Delimiter for peptides shared between different proteins (default is ;)
+#' @param output_file Optional. Name of the output file (better to merge it with the output of parse_mzTab::extract_protein_stats first and save together)
+#' @return Data frame with peptide info (without PTMs) for each detected protein including:
+# - `peptide_seqs`: ; delimited peptide sequences
+# - `nr_unmodified_peptides`: count of unmodified peptides
+# - `peptide_index`: min and max index of identified peptides in protein sequence, useful to check which part of the protein is detected
+#' @details This function performs the following steps:
+#'   - Reads the msstats input file and removes PTM information from peptide sequences
+#'   - Filters the FASTA file to include only detected proteins from msstats_in
+#'   - Extracts peptide sequences, counts, and positional indices for each protein.
+#' @export
 extract_peptides_per_protein <- function(msstats_input_path, fasta_path, contaminant_prefix = "CONTAMINANT", delimiter = ";", output_file = NULL) {
   
-  # 1. Read msstats_input, remove the PTM info from peptides
-  msstats_input <- read.csv(msstats_input_path, header = TRUE, sep = ',')
-  msstats_input <- msstats_input %>%
-    filter(!grepl(contaminant_prefix, ProteinName)) %>%
-    mutate(PeptideSequence = str_replace_all(PeptideSequence, "\\(.*?\\)", "") %>% # Remove modifications
-            str_replace_all("\\.", "")) # Remove dots
-  
-  # 2. Read fasta file and keep only detected proteins
-  protein_ids <- unlist(strsplit(msstats_input$ProteinName, ",")) %>% unique()
-  fasta_file <- readAAStringSet(fasta_path, format = "fasta")
-  fasta_file <- fasta_file[names(fasta_file) %in% protein_ids]
+  # Helper function to preprocess msstats input
+  preprocess_msstats_input <- function(msstats_input_path, contaminant_prefix) {
+    msstats_input <- read.csv(msstats_input_path, header = TRUE, sep = ',')
+    msstats_input <- msstats_input %>%
+      filter(!grepl(contaminant_prefix, ProteinName)) %>%
+      mutate(PeptideSequence = str_replace_all(PeptideSequence, "\\(.*?\\)", "") %>% # Remove modifications
+              str_replace_all("\\.", "")) # Remove dots
+    return(msstats_input)
+  }
 
+  # Helper function to filter the FASTA file for detected proteins (move it in general functions?)
+  filter_fasta_file <- function(fasta_path, protein_ids) {
+    fasta_file <- readAAStringSet(fasta_path, format = "fasta")
+    fasta_file <- fasta_file[names(fasta_file) %in% protein_ids]
+    return(fasta_file)
+  }
   
-  # 3. create the peptide_df and iterate over each protein
+  # Read and preprocess inputs
+  msstats_input <- preprocess_msstats_input(msstats_input_path, contaminant_prefix)
+  protein_ids <- unlist(strsplit(msstats_input$ProteinName, ",")) %>% unique()
+  fasta_file <- filter_fasta_file(fasta_path, protein_ids)
+
+  # Initialize peptide_df
   peptide_df <- data.frame(accession = protein_ids, peptide_seqs = NA, nr_unmodified_peptides = NA,  peptide_index = NA, stringsAsFactors = FALSE)
 
+  # Iterate over proteins in fasta
   for (i in seq_along(fasta_file)) {
     protein_id <- names(fasta_file)[i]
     protein_seq <- as.character(fasta_file[[i]])
-    start_index <- +Inf
-    end_index <- 0
-    
-    # Filter for peptides of the current protein
+    start_index <- NA
+    end_index <- NA
     peptides <- msstats_input %>%
       filter(grepl(protein_id, ProteinName)) %>%
       pull(PeptideSequence) %>%
       unique()
     
-    # Iterate peptides and update indices
+
+    # Find peptide indices
     for (pep in peptides) {
       pep_indices <- str_locate(protein_seq, pep)
-      
-      if (!is.na(pep_indices[1])) { # checks if peptide is found, unnecessary check probably
-        start_index <- min(start_index, pep_indices[1])
-        end_index <- max(end_index, pep_indices[2])
+      start_index <- min(start_index, pep_indices[1], na.rm = TRUE)
+      end_index <- max(end_index, pep_indices[2], na.rm = TRUE)
       }
-    }
-    
-    # If no valid peptides are found, set indices to NA
-    if (start_index == +Inf || end_index == 0) {
-      start_index <- NA
-      end_index <- NA
-    }
-    
-    # Update the peptide_df
-    peptide_df <- peptide_df %>%
-      mutate(
-        peptide_seqs = ifelse(accession == protein_id, paste(peptides, collapse = delimiter), peptide_seqs),
-        nr_unmodified_peptides = ifelse(accession == protein_id, length(peptides), nr_unmodified_peptides),
-        peptide_index = ifelse(accession == protein_id, paste0(start_index, "-", end_index), peptide_index)
-      )
+
+    # Update peptide_df
+    peptide_df[peptide_df$accession == protein_id, ] <- list(
+      accession = protein_id,
+      peptide_seqs = paste(peptides, collapse = delimiter),
+      nr_unmodified_peptides = length(peptides),
+      peptide_index = paste0(start_index, "-", end_index)
+    )
   }
+  
   
   # if save to csv
   if (!is.null(output_file)) {
