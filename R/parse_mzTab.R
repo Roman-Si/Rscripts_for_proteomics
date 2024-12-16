@@ -2,7 +2,7 @@
 #' @importFrom dplyr filter mutate select group_by summarize distinct
 #' @importFrom tidyr unnest
 #' @importFrom MSnbase MzTab
-#' @importMethodsFrom MSnbase proteins psms
+#' @importFrom ProtGenerics proteins psms
 #' @importFrom stringr str_detect
 NULL
 
