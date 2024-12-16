@@ -3,7 +3,7 @@
 #' @importFrom tidyr unnest
 #' @importFrom MSnbase MzTab
 #' @importFrom ProtGenerics proteins psms
-#' @importFrom stringr str_detect str_locate
+#' @importFrom stringr str_detect
 NULL
 
 

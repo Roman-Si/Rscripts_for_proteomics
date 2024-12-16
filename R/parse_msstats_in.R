@@ -1,5 +1,5 @@
 #' @import dplyr
-#' @importFrom stringr str_replace_all
+#' @importFrom stringr str_replace_all str_locate
 #' @importFrom Biostrings readAAStringSet
 NULL
 
