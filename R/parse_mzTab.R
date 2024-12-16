@@ -1,7 +1,7 @@
 #' @import ggplot2
 #' @importFrom dplyr filter mutate select group_by summarize distinct
 #' @importFrom tidyr unnest
-#' @import MSnbase
+#' @importFrom MSnbase MzTab proteins psms
 #' @importFrom stringr str_detect
 NULL
 
