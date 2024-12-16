@@ -82,5 +82,5 @@ extract_peptides_per_protein <- function(msstats_input_path, fasta_path, contami
     save_gzipped_csv(peptide_df, output_file)
   }
   
-  return(peptide_df)
+  return(peptide_df[,c(1,3,4, 2)]) # put peptide_seqs in last column
 }
