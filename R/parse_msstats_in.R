@@ -28,8 +28,8 @@ extract_peptides_per_protein <- function(msstats_input_path, fasta_path, contami
     msstats_input <- read.csv(msstats_input_path, header = TRUE, sep = ',')
     msstats_input <- msstats_input %>%
       filter(!grepl(contaminant_prefix, ProteinName)) %>%
-      mutate(PeptideSequence = str_replace_all(PeptideSequence, "\\(.*?\\)", "") %>% # Remove modifications
-              str_replace_all("\\.", "")) # Remove dots
+      mutate(PeptideSequence = stringr::str_replace_all(PeptideSequence, "\\(.*?\\)", "") %>% # Remove modifications
+               stringr::str_replace_all("\\.", "")) # Remove dots
     return(msstats_input)
   }
 
@@ -62,7 +62,7 @@ extract_peptides_per_protein <- function(msstats_input_path, fasta_path, contami
 
     # Find peptide indices
     for (pep in peptides) {
-      pep_indices <- str_locate(protein_seq, pep)
+      pep_indices <- stringr::str_locate(protein_seq, pep)
       start_index <- min(start_index, pep_indices[1], na.rm = TRUE)
       end_index <- max(end_index, pep_indices[2], na.rm = TRUE)
       }
