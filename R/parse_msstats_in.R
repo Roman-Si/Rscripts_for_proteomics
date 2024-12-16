@@ -46,7 +46,7 @@ extract_peptides_per_protein <- function(msstats_input_path, fasta_path, contami
   fasta_file <- filter_fasta_file(fasta_path, protein_ids)
 
   # Initialize peptide_df
-  peptide_df <- data.frame(accession = protein_ids, peptide_seqs = NA, nr_unmodified_peptides = NA,  peptide_index = NA, stringsAsFactors = FALSE)
+  peptide_df <- data.frame(accession = protein_ids, nr_unmodified_peptides = NA,  peptide_index = NA, peptide_seqs = NA, stringsAsFactors = FALSE)
 
   # Iterate over proteins in fasta
   for (i in seq_along(fasta_file)) {
@@ -82,5 +82,5 @@ extract_peptides_per_protein <- function(msstats_input_path, fasta_path, contami
     save_gzipped_csv(peptide_df, output_file)
   }
   
-  return(peptide_df[,c(1,3,4, 2)]) # put peptide_seqs in last column
+  return(peptide_df)
 }
