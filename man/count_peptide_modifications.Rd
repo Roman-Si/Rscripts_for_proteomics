@@ -19,8 +19,10 @@ count_peptide_modifications(
 \item{contaminant_prefix}{The prefix for contaminants, default is CONTAMINANT_}
 
 \item{plot_type}{The type of plot to generate:
-- `"separate"`: Plots the frequency of each modification individually.
-- `"mixed"`: Plots the frequency of all combinations of modifications.}
+\itemize{
+\item \code{"separate"}: Plots the frequency of each modification individually.
+\item \code{"mixed"}: Plots the frequency of all combinations of modifications.
+}}
 
 \item{output_jpg}{Optional. Name of the output jpg image to save.}
 

@@ -31,7 +31,9 @@ Processes the msstats_in (formatted as input for msstats) file to extract peptid
 }
 \details{
 This function performs the following steps:
-  - Reads the msstats input file and removes PTM information from peptide sequences
-  - Filters the FASTA file to include only detected proteins from msstats_in
-  - Extracts peptide sequences, counts, and positional indices for each protein.
+\itemize{
+\item Reads the msstats input file and removes PTM information from peptide sequences
+\item Filters the FASTA file to include only detected proteins from msstats_in
+\item Extracts peptide sequences, counts, and positional indices for each protein.
+}
 }

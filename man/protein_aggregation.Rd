@@ -14,8 +14,10 @@ The a dataframe with protein intensities
 }
 \description{
 Function for protein aggregation of peptide normalized data
-- Use Tukey's median polish protein aggregation
-- Remove artifacts with same value in all samples 
-- Replace the artifact intensities with top3 method
-- Merge the two methods
+\itemize{
+\item Use Tukey's median polish protein aggregation
+\item Remove artifacts with same value in all samples
+\item Replace the artifact intensities with top3 method
+\item Merge the two methods
+}
 }

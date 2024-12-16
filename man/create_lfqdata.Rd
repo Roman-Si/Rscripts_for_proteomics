@@ -19,8 +19,10 @@ create_lfqdata(
 \item{contaminant_prefix}{Prefix for contaminants, default is CONTAMINANT_}
 
 \item{response_level}{Specifies the level to use:
-- `"peptide"` (default): Aggregates peptide-level intensities.
-- `"protein"`: Uses protein-level intensities.}
+\itemize{
+\item \code{"peptide"} (default): Aggregates peptide-level intensities.
+\item \code{"protein"}: Uses protein-level intensities.
+}}
 
 \item{proteinId_column}{Name of column with protein IDs (deafult is "ProteinName")}
 

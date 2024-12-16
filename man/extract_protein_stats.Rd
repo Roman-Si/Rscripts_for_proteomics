@@ -19,10 +19,12 @@ extract_protein_stats(
 }
 \value{
 Data frame with the following columns:
-  - `accession`: Protein accession.
-  - `protein_coverage`: Coverage percentage of the protein sequence.
-  - `opt_global_nr_found_peptides`: Number of peptidoforms for this protein. A peptide can be counted with multiple PTMs.
-  - `PSMs`: Number of PSMs.
+\itemize{
+\item \code{accession}: Protein accession.
+\item \code{protein_coverage}: Coverage percentage of the protein sequence.
+\item \code{opt_global_nr_found_peptides}: Number of peptidoforms for this protein. A peptide can be counted with multiple PTMs.
+\item \code{PSMs}: Number of PSMs.
+}
 }
 \description{
 Extracts protein coverage, peptidoform count, and PSM count from an mzTab file.

@@ -11,14 +11,14 @@ filter_for_leading_protein(
 )
 }
 \arguments{
-\item{mp_df}{A dataframe with proteinGroups in `protein_Id` column}
+\item{mp_df}{A dataframe with proteinGroups in \code{protein_Id} column}
 
 \item{proteomicslfq_ids_to_keep}{A vector containing the proteomicsLFQ leading proteins}
 
 \item{delimiter}{Delimiter for multiple proteins in a protein group (default is ;)}
 }
 \value{
-A dataframe with only leading protein in `protein_Id` column
+A dataframe with only leading protein in \code{protein_Id} column
 }
 \description{
 For protein groups with multiple IDs, filters the data frame to retain only the leading protein ID based on a given list.
