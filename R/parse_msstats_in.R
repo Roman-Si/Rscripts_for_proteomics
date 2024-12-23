@@ -70,9 +70,10 @@ extract_peptides_per_protein <- function(msstats_input_path, fasta_path, contami
     # Update peptide_df
     peptide_df[peptide_df$accession == protein_id, ] <- list(
       accession = protein_id,
-      peptide_seqs = paste(peptides, collapse = delimiter),
       nr_unmodified_peptides = length(peptides),
-      peptide_index = paste0(start_index, "-", end_index)
+      peptide_index = paste0(start_index, "-", end_index),
+      peptide_seqs = paste(peptides, collapse = delimiter)
+      
     )
   }
   
