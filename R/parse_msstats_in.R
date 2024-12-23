@@ -42,7 +42,7 @@ extract_peptides_per_protein <- function(msstats_input_path, fasta_path, contami
   
   # Read and preprocess inputs
   msstats_input <- preprocess_msstats_input(msstats_input_path, contaminant_prefix)
-  protein_ids <- unlist(strsplit(msstats_input$ProteinName, ",")) %>% unique()
+  protein_ids <- unlist(strsplit(msstats_input$ProteinName, delimiter)) %>% unique()
   fasta_file <- filter_fasta_file(fasta_path, protein_ids)
 
   # Initialize peptide_df
