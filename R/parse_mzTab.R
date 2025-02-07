@@ -15,7 +15,7 @@ NULL
 #' @param contaminant_prefix Prefix for contaminants, default is CONTAMINANT_
 #' @param output_file Optional. Name of the output file
 #' @return Data frame with the following columns:
-#'   - `accession`: Protein accession.
+#'   - `protein_Id`: Protein accession.
 #'   - `protein_coverage`: Coverage percentage of the protein sequence.
 #'   - `opt_global_nr_found_peptides`: Number of peptidoforms for this protein. A peptide can be counted with multiple PTMs.
 #'   - `PSMs`: Number of PSMs.
@@ -35,6 +35,8 @@ extract_protein_stats <- function(mzt, contaminant_prefix = 'CONTAMINANT_', outp
 
   # merge the two dataframes
   prot_info <- merge(prot_info, psms, by = "accession", all = TRUE)
+  names(prot_info)[names(prot_info) == 'accession'] <- 'protein_Id'
+
 
   if (!is.null(output_file)) {
     save_gzipped_csv(prot_info, output_file)
