@@ -38,7 +38,7 @@ convert_diann_to_msstats_in <- function(diann_parquet, qvalue = 0.01, contaminan
 # - `accession`: derived from the Protein.Group column
 # - `PeptideSequence`: derived from the Stripped.Sequence column
 #' @export
-prepare_diann_for_prolfqua <- function(diann_parquet, qvalue = 0.01, contaminant_prefix = "Cont") {
+prepare_diann_for_prolfqua <- function(diann_parquet, qvalue = 0.01, response_level = "protein", contaminant_prefix = "Cont") {
     diann_df <- arrow::read_parquet(diann_parquet)
 
     # Filter for contaminants and precursors 1% FDR

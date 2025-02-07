@@ -7,6 +7,7 @@
 prepare_diann_for_prolfqua(
   diann_parquet,
   qvalue = 0.01,
+  response_level = "protein",
   contaminant_prefix = "Cont"
 )
 }
@@ -15,13 +16,13 @@ prepare_diann_for_prolfqua(
 
 \item{qvalue}{FDR for precursors and response level (default 0.01)}
 
-\item{contaminant_prefix}{Prefix for contaminants (default is Cont)}
-
 \item{response_level}{Specifies the level to use:
 \itemize{
 \item \code{"protein"} (default): Will use the proteinGroup level MaxLFQ
 \item \code{"gene"}: Will use the gene level MaxLFQ
 }}
+
+\item{contaminant_prefix}{Prefix for contaminants (default is Cont)}
 }
 \value{
 Data frame with reliable precursors and without contaminants and the following columns for msstats_input format
