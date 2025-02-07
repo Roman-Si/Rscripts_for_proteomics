@@ -36,8 +36,7 @@ strip_ptms_from_msstats_in <- function(msstats_input_path, contaminant_prefix = 
 #'   - Filters the FASTA file to include only detected proteins from msstats_in
 #'   - Extracts peptide sequences, counts, and positional indices for each protein.
 #' @export
-extract_peptides_per_protein <- function(msstats_df, fasta_path, delimiter = ";", output_file = NULL) {
-  
+extract_peptides_per_protein <- function(msstats_in_df, fasta_path, delimiter = ";") {  
   
   # Read and preprocess inputs
   protein_ids <- unlist(strsplit(msstats_input$ProteinName, delimiter)) %>% unique()
@@ -74,7 +73,6 @@ extract_peptides_per_protein <- function(msstats_df, fasta_path, delimiter = ";"
       
     )
   }
-  
   
   return(peptide_df)
 }
