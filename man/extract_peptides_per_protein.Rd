@@ -4,7 +4,12 @@
 \alias{extract_peptides_per_protein}
 \title{Extract peptide sequences, count and indices per protein}
 \usage{
-extract_peptides_per_protein(msstats_in_df, fasta_path, delimiter = ";")
+extract_peptides_per_protein(
+  msstats_in_df,
+  fasta_path,
+  delimiter = ";",
+  uniprot_fasta_header = FALSE
+)
 }
 \arguments{
 \item{msstats_in_df}{msstats_input style dataframe with PeptideSequence column stripped from PTMs and proteinId in column ProteinName}
