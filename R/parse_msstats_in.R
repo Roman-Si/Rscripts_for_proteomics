@@ -28,6 +28,7 @@ strip_ptms_from_msstats_in <- function(msstats_input_path, contaminant_prefix = 
 #' @param msstats_in_df msstats_input style dataframe with PeptideSequence column stripped from PTMs and proteinId in column ProteinName
 #' @param fasta_path Path to fasta file with protein sequences (can be gzipped)
 #' @param delimiter Delimiter for peptides shared between different proteins (default is ;)
+#' @param uniprot_fasta_header If FASTA headers are in UniProt format parses the accession (deafult FALSE)
 #' @return Data frame with peptide info (without PTMs) for each detected protein including:
 # - `peptide_seqs`: ; delimited peptide sequences
 # - `nr_unmodified_peptides`: count of unmodified peptides

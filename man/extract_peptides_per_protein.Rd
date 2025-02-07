@@ -17,6 +17,8 @@ extract_peptides_per_protein(
 \item{fasta_path}{Path to fasta file with protein sequences (can be gzipped)}
 
 \item{delimiter}{Delimiter for peptides shared between different proteins (default is ;)}
+
+\item{uniprot_fasta_header}{If FASTA headers are in UniProt format parses the accession (deafult FALSE)}
 }
 \value{
 Data frame with peptide info (without PTMs) for each detected protein including:
