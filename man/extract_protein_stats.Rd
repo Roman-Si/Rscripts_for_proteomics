@@ -20,7 +20,7 @@ extract_protein_stats(
 \value{
 Data frame with the following columns:
 \itemize{
-\item \code{accession}: Protein accession.
+\item \code{protein_Id}: Protein accession.
 \item \code{protein_coverage}: Coverage percentage of the protein sequence.
 \item \code{opt_global_nr_found_peptides}: Number of peptidoforms for this protein. A peptide can be counted with multiple PTMs.
 \item \code{PSMs}: Number of PSMs.
