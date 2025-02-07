@@ -1,7 +1,13 @@
 # Rsripts_for_proteomics
 
 ## About
-Sripts for parsing the output of proteomics analyses. Started writing for the mzTab and msstats_input files from quantms (https://doi.org/10.1038/s41592-024-02343-1) but can expand.
+Scripts for parsing the output of proteomics analyses.
+
+Functions to do the following:
+1. Parse the mzTab output from quantms
+2. Parse the msstats_input file from quantms
+3. Parse the diann parquet output
+4. Prepare dataframes for EDA and differential analysis with prolfqua
 
 Can add Rmd files or links to other projects later to show example usage.
 
@@ -24,6 +30,10 @@ An analysis using this package can be found in https://github.com/Roman-Si/Asp-p
 Proteomics R packages used:
 - [prolfqua](https://github.com/fgcz/prolfqua)
 - [MsnBase](https://www.bioconductor.org/packages/release/bioc/html/MSnbase.html)
+
+Pipelines used for analysis of LC-MS/MS data:
+- [quantms](https://github.com/bigbio/quantms) for DDA
+- [DIA-NN](https://github.com/vdemichev/DiaNN) for DIA
 
 
 Ideas for packaging taken from
