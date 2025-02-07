@@ -65,8 +65,6 @@ prepare_diann_for_prolfqua <- function(diann_parquet, qvalue = 0.01, response_le
                         distinct()
         }
     colnames(quant_df) <- c("Reference", "ProteinName", "Intensity")
-
-    diann_df$accession <- diann_df$Protein.Group
-    diann_df$PeptideSequence <- diann_df$Stripped.Sequence
-  return(diann_df)
+    
+  return(quant_df)
 }
