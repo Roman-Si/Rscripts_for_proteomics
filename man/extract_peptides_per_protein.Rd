@@ -4,36 +4,25 @@
 \alias{extract_peptides_per_protein}
 \title{Extract peptide sequences, count and indices per protein}
 \usage{
-extract_peptides_per_protein(
-  msstats_input_path,
-  fasta_path,
-  contaminant_prefix = "CONTAMINANT",
-  delimiter = ";",
-  output_file = NULL
-)
+extract_peptides_per_protein(msstats_in_df, fasta_path, delimiter = ";")
 }
 \arguments{
-\item{msstats_input_path}{Path to msstats input style file from quantms (probably works for other programs as well?)}
+\item{msstats_in_df}{msstats_input style dataframe with PeptideSequence column stripped from PTMs and proteinId in column ProteinName}
 
 \item{fasta_path}{Path to fasta file with protein sequences (can be gzipped)}
 
-\item{contaminant_prefix}{Prefix for contaminants (default is CONTAMINANT)}
-
 \item{delimiter}{Delimiter for peptides shared between different proteins (default is ;)}
-
-\item{output_file}{Optional. Name of the output file (better to merge it with the output of parse_mzTab::extract_protein_stats first and save together)}
 }
 \value{
 Data frame with peptide info (without PTMs) for each detected protein including:
 }
 \description{
-Processes the msstats_in (formatted as input for msstats) file to extract peptide sequences, number and indexes of quantified peptides for each protein. Maybe too long and needs splitting
+Processes the msstats_in_df dataframe to extract peptide sequences, number and indexes of quantified peptides for each protein
 }
 \details{
 This function performs the following steps:
 \itemize{
-\item Reads the msstats input file and removes PTM information from peptide sequences
-\item Filters the FASTA file to include only detected proteins from msstats_in
+\item Filters the FASTA file to include only detected proteins from msstats_in_df
 \item Extracts peptide sequences, counts, and positional indices for each protein.
 }
 }
