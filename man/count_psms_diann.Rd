@@ -18,7 +18,7 @@ count_psms_diann(diann_dataframe, response_level = "protein")
 \value{
 Data frame with the following columns:
 \itemize{
-\item \verb{Protein.Group or Gene}: Protein or gene accession, one per row
+\item \verb{protein_Id or gene_Id}: Protein or gene accession, one per row
 \item \code{PSMs}: Number of PSMs.
 }
 }

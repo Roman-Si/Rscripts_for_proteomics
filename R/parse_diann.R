@@ -27,7 +27,7 @@ filter_diann_parquet <- function(diann_parquet, qvalue = 0.01, contaminant_prefi
 #'   - `"protein"` (default): Will count peptidoforms and PSMs per proteinGroup
 #'   - `"gene"`: Will count peptidoforms and PSMs per gene
 #' @return Data frame with the following columns:
-#'   - `Protein.Group or Gene`: Protein or gene accession, one per row
+#'   - `protein_Id or gene_Id`: Protein or gene accession, one per row
 #'   - `PSMs`: Number of PSMs.
 #' @export
 count_psms_diann <- function(diann_dataframe,  response_level = "protein") {
@@ -38,19 +38,19 @@ count_psms_diann <- function(diann_dataframe,  response_level = "protein") {
 
     if (response_level == "protein") {
         psms_count <- diann_dataframe %>% 
-                        mutate(Protein.Group = strsplit(as.character(Protein.Group), ";")) %>% # ; separated if multiple proteins per group
-                        unnest(Protein.Group) %>%
+                        mutate(protein_Id = strsplit(as.character(Protein.Group), ";")) %>% # ; separated if multiple proteins per group
+                        unnest(protein_Id) %>%
                         distinct() %>%
-                        group_by(Protein.Group) %>%
+                        group_by(protein_Id) %>%
                         summarize(PSMs = n())
         }
     
     if (response_level == "gene") {
         psms_count <- diann_dataframe %>% 
-                        mutate(Genes = strsplit(as.character(Genes), ";")) %>% # ; separated if multiple genes per group
-                        unnest(Genes) %>%
+                        mutate(gene_Id = strsplit(as.character(Genes), ";")) %>% # ; separated if multiple genes per group
+                        unnest(gene_Id) %>%
                         distinct() %>%
-                        group_by(Genes) %>%
+                        group_by(gene_Id) %>%
                         summarize(PSMs = n())
         }
  
