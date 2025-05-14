@@ -13,10 +13,18 @@ Can add Rmd files or links to other projects later to show example usage.
 
 ## Installation
 
-```
-# if devtools not installed
-# install.packages("devtools")
+You can install with devtools, however devtools does not resolve the Bioconductor packages. They have to be installed beforehand.
 
+```
+# Install Bioconductor packages
+
+if (!require("BiocManager", quietly = TRUE))
+  install.packages("BiocManager")
+BiocManager::install(c("Biostrings", "MSnbase", "ProtGenerics"))
+
+# Install devtools and this package
+if (!require("devtools", quietly = TRUE))
+  install.packages("devtools")
 library(devtools)
 devtools::install_github("Roman-Si/Rsripts_for_proteomics")
 ```
