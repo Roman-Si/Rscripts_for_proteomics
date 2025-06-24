@@ -1,4 +1,4 @@
-# Rsripts_for_proteomics
+# Rscripts_for_proteomics
 
 ## About
 Scripts for parsing the output of proteomics analyses.
@@ -26,7 +26,7 @@ BiocManager::install(c("Biostrings", "MSnbase", "ProtGenerics"))
 if (!require("devtools", quietly = TRUE))
   install.packages("devtools")
 library(devtools)
-devtools::install_github("Roman-Si/Rsripts_for_proteomics")
+devtools::install_github("Roman-Si/Rscripts_for_proteomics")
 ```
 
 ## Usage
