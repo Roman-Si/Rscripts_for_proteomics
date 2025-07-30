@@ -11,9 +11,10 @@ NULL
 #' @param df The dataframe
 #' @param output_file The name of the output fle, if given in a directory that does not exist it will be created
 #' @param row_names Logical; whether to include row names in the output (default is FALSE)
+#' @param na_value String for the empty values in the saved dataframe (default is empty string "")
 #' @return None
 #' @export
-save_gzipped_csv <- function(df, output_file, row_names = FALSE) {
+save_gzipped_csv <- function(df, output_file, row_names = FALSE, na_value = "") {
   output_dir <- dirname(output_file)
   
   # Create the directory if it doesn't exist
@@ -21,7 +22,7 @@ save_gzipped_csv <- function(df, output_file, row_names = FALSE) {
     dir.create(output_dir, recursive = TRUE)
   }
   
-  write.csv(df, gzfile(output_file), row.names = row_names)
+  write.csv(df, gzfile(output_file), row.names = row_names, na = na_value)
 }
 
 
