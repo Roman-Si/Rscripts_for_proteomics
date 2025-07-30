@@ -99,17 +99,17 @@ prepare_diann_for_prolfqua <- function(diann_dataframe, qvalue = 0.01, response_
     if (response_level == "protein") {
         quant_df <- diann_dataframe %>% 
                         filter(PG.Q.Value <= 0.01) %>% 
-                        select(Run, Protein.Group, PG.MaxLFQ) %>%
+                        select(Run, `Run.Index`, Protein.Group, PG.MaxLFQ) %>%
                         distinct()
         }
     
     if (response_level == "gene") {
         quant_df <- diann_dataframe %>% 
                         filter(GG.Q.Value <= 0.01) %>% 
-                        select(Run, Genes, Genes.MaxLFQ) %>% 
+                        select(Run, `Run.Index`, Genes, Genes.MaxLFQ) %>% 
                         distinct()
         }
-    colnames(quant_df) <- c("Reference", "ProteinName", "Intensity")
+    colnames(quant_df) <- c("Reference", "Run", "ProteinName", "Intensity")
     
   return(quant_df)
 }
