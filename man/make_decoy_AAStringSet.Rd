@@ -5,8 +5,6 @@
 \title{Generate pseudo-reversed decoy sequences as Biostrings AAStringSet}
 \usage{
 make_decoy_AAStringSet(fasta_path, uniprot_fasta_header = FALSE)
-
-make_decoy_AAStringSet(fasta_path, uniprot_fasta_header = FALSE)
 }
 \arguments{
 \item{fasta_path}{Path to the FASTA file}
@@ -15,8 +13,6 @@ make_decoy_AAStringSet(fasta_path, uniprot_fasta_header = FALSE)
 }
 \value{
 AAStringSet of decoy sequences prefixed by "DECOY_"
-
-AAStringSet of reversed decoy protein sequences, with headers prefixed by "DECOY_"
 }
 \description{
 Keeps the first residue fixed (methionine) and reverses remaining sequence.

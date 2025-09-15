@@ -70,26 +70,6 @@ make_decoy_AAStringSet <- function(fasta_path, uniprot_fasta_header = FALSE) {
 }
 
 
-#' Generate decoy sequences of fasta file as Biostrings AAStringSet
-#'
-#' @param fasta_path Path to the FASTA file
-#' @param uniprot_fasta_header Logical. If TRUE, parse UniProt-style headers.
-#'
-#' @return AAStringSet of reversed decoy protein sequences, with headers prefixed by "DECOY_"
-#' @export
-make_decoy_AAStringSet <- function(fasta_path, uniprot_fasta_header = FALSE) {
-  fasta_file <- read_and_parse_fasta(fasta_path, uniprot_fasta_header)
-  
-  decoy_seqs <- vapply(as.character(fasta_file),
-                       function(seq) paste(rev(strsplit(seq, "", fixed = TRUE)[[1]]), collapse = ""),
-                       character(1))
-  
-  decoys <- Biostrings::AAStringSet(decoy_seqs)
-  names(decoys) <- paste0("DECOY_", names(fasta_file))
-  decoys
-}
-
-
 #' Cleave an AAStringSet into peptides
 #'
 #' @param aa_set Biostrings AAStringSet of protein sequences
