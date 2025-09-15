@@ -30,6 +30,7 @@ strip_ptms_from_msstats_in <- function(msstats_input_path, contaminant_prefix = 
 #' @param fasta_path Path to fasta file with protein sequences (can be gzipped)
 #' @param delimiter Delimiter for peptides shared between different proteins (default is ;)
 #' @param uniprot_fasta_header If FASTA headers are in UniProt format parses the accession (deafult FALSE)
+#' @param enzyme_cleaver The enzyme rule used for digestion with cleaver:cleave (deafult "trypsin-simple" allowing cuts before proline)
 #' @param missed_cleavages Allow n missed trypsin cleavages (deafult 2)
 #' @param min_pep_len Min theoretical tryptic peptide length (default 7)
 #' @param max_pep_len Max theoretical tryptic peptide length (default 40, for dia-nn change to 30)
@@ -43,7 +44,8 @@ strip_ptms_from_msstats_in <- function(msstats_input_path, contaminant_prefix = 
 #'   - Filters the FASTA file to include only detected proteins from msstats_in_df
 #'   - Extracts peptide sequences, counts, and positional indices for each protein.
 #' @export
-extract_peptides_per_protein <- function(msstats_in_df, fasta_path, delimiter = ";", uniprot_fasta_header = FALSE, missed_cleavages = 2, min_pep_len = 7, max_pep_len = 40) {  
+extract_peptides_per_protein <- function(msstats_in_df, fasta_path, delimiter = ";", uniprot_fasta_header = FALSE, enzyme_cleaver = "trypsin-simple",
+                                         missed_cleavages = 2, min_pep_len = 7, max_pep_len = 40) {  
   
   # Read and preprocess inputs
   protein_ids <- unlist(strsplit(msstats_in_df$ProteinName, delimiter)) %>% unique()
@@ -60,7 +62,7 @@ extract_peptides_per_protein <- function(msstats_in_df, fasta_path, delimiter = 
     end_index <- NA
 
     # Get number of theoretical tryptic peptides
-    in_silico_peptides <- cleave(protein_seq, "trypsin-simple", missedCleavages = 0:missed_cleavages) %>%
+    in_silico_peptides <- cleave(protein_seq, enzym = enzyme_cleaver, missedCleavages = 0:missed_cleavages) %>%
       unlist() %>% as.character() %>%
       .[nchar(.) >= min_pep_len & nchar(.) <= max_pep_len]
 

@@ -4,7 +4,7 @@
 \alias{save_gzipped_csv}
 \title{Save gzipped csv file}
 \usage{
-save_gzipped_csv(df, output_file, row_names = FALSE)
+save_gzipped_csv(df, output_file, row_names = FALSE, na_value = "")
 }
 \arguments{
 \item{df}{The dataframe}
@@ -12,6 +12,8 @@ save_gzipped_csv(df, output_file, row_names = FALSE)
 \item{output_file}{The name of the output fle, if given in a directory that does not exist it will be created}
 
 \item{row_names}{Logical; whether to include row names in the output (default is FALSE)}
+
+\item{na_value}{String for the empty values in the saved dataframe (default is empty string "")}
 }
 \value{
 None

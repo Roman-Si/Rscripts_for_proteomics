@@ -9,6 +9,7 @@ extract_peptides_per_protein(
   fasta_path,
   delimiter = ";",
   uniprot_fasta_header = FALSE,
+  enzyme_cleaver = "trypsin-simple",
   missed_cleavages = 2,
   min_pep_len = 7,
   max_pep_len = 40
@@ -22,6 +23,8 @@ extract_peptides_per_protein(
 \item{delimiter}{Delimiter for peptides shared between different proteins (default is ;)}
 
 \item{uniprot_fasta_header}{If FASTA headers are in UniProt format parses the accession (deafult FALSE)}
+
+\item{enzyme_cleaver}{The enzyme rule used for digestion with cleaver:cleave (deafult "trypsin-simple" allowing cuts before proline)}
 
 \item{missed_cleavages}{Allow n missed trypsin cleavages (deafult 2)}
 
