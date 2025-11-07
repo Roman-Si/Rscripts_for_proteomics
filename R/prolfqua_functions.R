@@ -152,12 +152,13 @@ filter_proteins_by_replicates <- function(mp_df, conditions, min_replicates) {
         max_nan <- length(condition_cols) - min_replicates
         mp_df[[paste0("count_na_", condition)]] <- rowSums(is.na(mp_df[, condition_cols]))
 
-        passing_proteins <- rownames(mp_df[mp_df[[paste0("count_na_", condition)]] <= max_nan, ])
-        quantified_proteins <- unique(c(quantified_proteins, passing_proteins))
+        passing_proteins <- mp_df[mp_df[[paste0("count_na_", condition)]] <= max_nan, ] |> pull(protein_Id)
+        quantified_proteins <- union(quantified_proteins, passing_proteins)
         }
     
-    mp_df_quant <- mp_df[rownames(mp_df) %in% quantified_proteins, ]
-    mp_df_quant <- mp_df_quant %>% select(-contains('count_na_'))
+    mp_df_quant <- mp_df |> 
+        filter(protein_Id %in% quantified_proteins)  |>
+        select(-contains('count_na_'))
     
     return(mp_df_quant)
 }
