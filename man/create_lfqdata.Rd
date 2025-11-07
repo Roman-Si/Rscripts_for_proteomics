@@ -10,7 +10,8 @@ create_lfqdata(
   response_level = "peptide",
   proteinId_column = "ProteinName",
   factor_column = "Condition",
-  extra_factor = NULL
+  extra_factor = NULL,
+  factor_depth = 1
 )
 }
 \arguments{
@@ -29,10 +30,12 @@ create_lfqdata(
 \item{factor_column}{Name of column with the experimental/biological factor (default is "Condition")}
 
 \item{extra_factor}{Optional. Name of additional factor for protein level data, batches for example.}
+
+\item{factor_depth}{The level of experimental factors (default 1). Set to one in case you want to test the interaction with the extra factor.}
 }
 \value{
 The LFQData object
 }
 \description{
-Converts a data frame of msstats input format or a custom data frame to LFQData object for the prolfqua package. Sample names in must be in Reference column, response in Intensity column
+Converts a data frame of msstats input format or a custom data frame to LFQData object for the prolfqua package. Sample names in must be in Reference column, response in Intensity column. Accepts up to 2 experimental factors.
 }

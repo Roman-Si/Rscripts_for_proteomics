@@ -7,7 +7,7 @@ NULL
 
 #' Create an LFQData object for prolfqua from msstats_in
 #'
-#' Converts a data frame of msstats input format or a custom data frame to LFQData object for the prolfqua package. Sample names in must be in Reference column, response in Intensity column
+#' Converts a data frame of msstats input format or a custom data frame to LFQData object for the prolfqua package. Sample names in must be in Reference column, response in Intensity column. Accepts up to 2 experimental factors.
 #'
 #' @param data Dataframe with peptide at msstats_in format or protein data
 #' @param contaminant_prefix Prefix for contaminants, default is CONTAMINANT_
@@ -17,9 +17,10 @@ NULL
 #' @param proteinId_column Name of column with protein IDs (deafult is "ProteinName")
 #' @param factor_column Name of column with the experimental/biological factor (default is "Condition")
 #' @param extra_factor Optional. Name of additional factor for protein level data, batches for example.
+#' @param factor_depth The level of experimental factors (default 1). Set to one in case you want to test the interaction with the extra factor.
 #' @return The LFQData object
 #' @export
-create_lfqdata <- function(data, contaminant_prefix = 'CONTAMINANT_', response_level = "peptide", proteinId_column = "ProteinName",factor_column = "Condition", extra_factor = NULL) {
+create_lfqdata <- function(data, contaminant_prefix = 'CONTAMINANT_', response_level = "peptide", proteinId_column = "ProteinName",factor_column = "Condition", extra_factor = NULL, factor_depth = 1) {
 
     # check the response level is correct
     if (!response_level %in% c("peptide", "protein")) {
@@ -40,11 +41,11 @@ create_lfqdata <- function(data, contaminant_prefix = 'CONTAMINANT_', response_l
     atable$hierarchyDepth <- 1
     atable$set_response("Intensity")
     atable$factors[["condition_"]] = factor_column
-    atable$factors[["run"]] = "Run"
     if(!is.null(extra_factor)) {
         atable$factors[["extrafactor_"]] = extra_factor
-}
-    atable$factorDepth <- 1
+} 
+    atable$factorDepth <- factor_depth
+    atable$factors[["run"]] = "Run"
     config <- prolfqua::AnalysisConfiguration$new(atable)
     
     adata <- prolfqua::setup_analysis(data, config)
@@ -137,7 +138,7 @@ filter_for_leading_protein <- function(mp_df, proteomicslfq_ids_to_keep, protein
 
 #' Filter proteins by replicate counts per condition
 #'
-#' Retains proteins that are quantified in at least a specified number of replicates for one condition.
+#' Retains proteins that are quantified in at least a specified number of replicates of at least one condition.
 #'
 #' @param mp_df The dataframe with protein quantifications
 #' @param conditions The vector of the conditions to search the mp_df colnames

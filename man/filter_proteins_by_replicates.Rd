@@ -17,5 +17,5 @@ filter_proteins_by_replicates(mp_df, conditions, min_replicates)
 The dataframe with proteins passing the filtering
 }
 \description{
-Retains proteins that are quantified in at least a specified number of replicates for one condition.
+Retains proteins that are quantified in at least a specified number of replicates of at least one condition.
 }
